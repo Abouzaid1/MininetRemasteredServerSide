@@ -9,6 +9,10 @@ const topoSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Device'
     }],
+    text: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Text'
+    }],
     routers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Device'
@@ -27,7 +31,7 @@ const topoSchema = new mongoose.Schema({
     }],
     links: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Links'
+        ref: 'Link'
     }],
     creator: {
         type: String,

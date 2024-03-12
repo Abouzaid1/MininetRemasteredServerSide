@@ -7,38 +7,43 @@ const getAllDevice = async (req, res) => {
     res.json(devices);
 }
 const addDevice = async (req, res) => {
-    const newDevice = new Device(req.body);
-    await newDevice.save();
-    console.log('====================================');
-    console.log(newDevice);
-    console.log('====================================');
-    const topo = await Topo.findById(req.body.topoId);
-    if (newDevice.type == "pc") {
-        topo.pcs.push(newDevice._id);
-        console.log(newDevice.type);
-    }
-    else if (newDevice.type == "sw") {
-        console.log(newDevice.type);
-        topo.sws.push(newDevice._id);
-    }
-    else if (newDevice.type == "ro") {
-        console.log(newDevice.type);
-        topo.routers.push(newDevice._id);
-    }
-    else if (newDevice.type == "co") {
-        console.log(newDevice.type);
-        topo.controllers.push(newDevice._id);
-    }
-    else if (newDevice.type == "la") {
-        console.log(newDevice.type);
-        topo.laptops.push(newDevice._id);
-    }
-    await topo.save();
-    console.log(newDevice);
-}
+    if (!req.body.name){
+        res.json("The device should has a host name")
+    }else{
 
+        const newDevice = new Device(req.body);
+        await newDevice.save();
+    
+        const topo = await Topo.findById(req.body.topoId);
+        if (newDevice.type == "pc") {
+            topo.pcs.push(newDevice._id);
+        }
+        else if (newDevice.type == "sw") {
+            topo.sws.push(newDevice._id);
+        }
+        else if (newDevice.type == "ro") {
+            topo.routers.push(newDevice._id);
+        }
+        else if (newDevice.type == "co") {
+            topo.controllers.push(newDevice._id);
+        }
+        else if (newDevice.type == "la") {
+            topo.laptops.push(newDevice._id);
+        }
+        await topo.save();
+    }
+}
+const removeDevice = async (req,res) => {
+    const deviceId = req.params.id
+    console.log(deviceId);
+    const device = await Device.findById(deviceId);
+    const type = device.type
+    await Device.deleteOne({_id: deviceId})
+    await Topo.deleteOne({_id: deviceId})
+}
 
 module.exports = {
     getAllDevice,
-    addDevice
+    addDevice,
+    removeDevice
 }

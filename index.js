@@ -21,20 +21,24 @@ app.use(express.json());
 
 const deviceRouter = require('./routes/device.route');
 const topoRouter = require('./routes/topo.route');
+const textRouter = require('./routes/text.route');
+const linkRouter = require('./routes/link.route');
 
 
-app.use('/api/topo', topoRouter) 
-app.use('/api/device', deviceRouter) 
+app.use('/api/topo', topoRouter)
+app.use('/api/device', deviceRouter)
+app.use('/api/text', textRouter)
+app.use('/api/link', linkRouter)
 
 
 // global middleware for not found router
-app.all('*', (req, res, next)=> {
-    return res.status(404).json({ status: httpStatusText.ERROR, message: 'this resource is not available'})
+app.all('*', (req, res, next) => {
+    return res.status(404).json({ status: httpStatusText.ERROR, message: 'this resource is not available' })
 })
 
 // global error handler
 app.use((error, req, res, next) => {
-    res.status(error.statusCode || 500).json({status: error.statusText || httpStatusText.ERROR, message: error.message, code: error.statusCode || 500, data: null});
+    res.status(error.statusCode || 500).json({ status: error.statusText || httpStatusText.ERROR, message: error.message, code: error.statusCode || 500, data: null });
 })
 app.listen(process.env.PORT || 4000, () => {
     console.log('listening on port: 4000');
