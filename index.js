@@ -2,12 +2,11 @@ require('dotenv').config()
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
-
-
+const http = require('http');
 
 const app = express();
 const httpStatusText = require('./utils/httpStatusText');
+app.use(cors())
 
 
 const url = process.env.MONGO_URL;
@@ -16,7 +15,6 @@ mongoose.connect(url).then(() => {
     console.log('mongodb server started')
 })
 
-app.use(cors())
 app.use(express.json());
 
 const deviceRouter = require('./routes/device.route');
@@ -42,4 +40,29 @@ app.use((error, req, res, next) => {
 })
 app.listen(process.env.PORT || 4000, () => {
     console.log('listening on port: 4000');
+});
+
+
+// sockets 
+const { createServer } = require('node:http');
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const io = new Server(server);
+
+io.on('connect', (socket) => {
+    console.log('A user connected');
+    
+    // Listen for mouseMove events from clients
+    socket.on('mouseMove', (data) => {
+        // Broadcast the mouse movement data to all connected clients except the sender
+        socket.broadcast.emit('mouseMove', data);
+    });
+    
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
+server.listen(3000, () => {
+    console.log('server running at http://localhost:3000');
 });
