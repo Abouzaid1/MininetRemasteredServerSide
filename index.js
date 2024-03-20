@@ -47,7 +47,13 @@ app.listen(process.env.PORT || 4000, () => {
 const { createServer } = require('node:http');
 const { Server } = require("socket.io");
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server)(server, {
+    pingTimeout: 60000,
+    cors: {
+        origin: "https://mininet-remastered.vercel.app/",
+        // credentials: true,
+    },
+});;
 
 io.on('connect', (socket) => {
     console.log('A user connected');
@@ -64,5 +70,5 @@ io.on('connect', (socket) => {
 });
 
 server.listen(3000, () => {
-    console.log('server running at http://localhost:3000');
+    console.log('server running at 3000');
 });
