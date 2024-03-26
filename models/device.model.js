@@ -8,7 +8,7 @@ const deviceSchema = new mongoose.Schema({
         type: Object,
         default: { x: 100, y: 200 }
     },
-    type:String,
+    type: String,
     topoId: {
         type: String
     },

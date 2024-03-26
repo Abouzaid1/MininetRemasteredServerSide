@@ -8,7 +8,6 @@ const app = express();
 const httpStatusText = require('./utils/httpStatusText');
 app.use(cors())
 
-
 const url = process.env.MONGO_URL;
 
 mongoose.connect(url).then(() => {
