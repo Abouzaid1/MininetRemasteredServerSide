@@ -3,7 +3,9 @@ const httpStatusText = require('../utils/httpStatusText');
 const Topo = require('../models/topo.model');
 
 const getAllDevice = async (req, res) => {
-    const devices = await Device.find();
+    console.log(req.params);
+    const devices = await Device.findById(req.params.id);
+    console.log("1");
     res.json(devices);
 }
 const addDevice = async (req, res) => {
@@ -59,9 +61,15 @@ const removeDevice = async (req, res) => {
     // }
     // await topo.save();
 }
-
+const updateDevice = async (req, res) => {
+    const deviceId = req.body.id;
+    const newPosition = req.body.position;
+    console.log(newPosition);
+    await Device.findByIdAndUpdate(deviceId, { position: newPosition });
+}
 module.exports = {
     getAllDevice,
     addDevice,
-    removeDevice
+    removeDevice,
+    updateDevice
 }
