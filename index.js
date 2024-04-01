@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
-
 const app = express();
 const httpStatusText = require('./utils/httpStatusText');
 app.use(cors())
@@ -48,14 +47,22 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 const io = new Server(server)
 io.on('connect', (socket) => {
-    console.log('A user connected');
-    
+    socket.on('dataFromClient', (data) => {
+        const { room, message } = data;
+        // io.to(room).emit('message', message);
+        console.log(room);
+        socket.join(room);
+    });
     // Listen for mouseMove events from clients
     socket.on('mouseMove', (data) => {
         // Broadcast the mouse movement data to all connected clients except the sender
         socket.broadcast.emit('mouseMove', data);
     });
-    
+    socket.on('controllerMove', (data) => {
+        // Broadcast the mouse movement data to all connected clients except the sender
+        socket.broadcast.emit('controllerMove', data);
+    });
+
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });

@@ -1,10 +1,10 @@
 const Device = require('../models/device.model');
 const httpStatusText = require('../utils/httpStatusText');
 const Topo = require('../models/topo.model');
-
 const getAllDevice = async (req, res) => {
     console.log(req.params);
     const devices = await Device.findById(req.params.id);
+    topoId = req.params.id
     console.log("1");
     res.json(devices);
 }
@@ -14,25 +14,31 @@ const addDevice = async (req, res) => {
     } else {
 
         const newDevice = new Device(req.body);
-        await newDevice.save();
+        const existingDevices = await Device.find({name:req.body.name})
+        if (existingDevices.length == 0) {
+            await newDevice.save();
 
-        const topo = await Topo.findById(req.body.topoId);
-        if (newDevice.type == "pc") {
-            topo.pcs.push(newDevice._id);
+            const topo = await Topo.findById(req.body.topoId);
+            if (newDevice.type == "pc") {
+                topo.pcs.push(newDevice._id);
+            }
+            else if (newDevice.type == "sw") {
+                topo.sws.push(newDevice._id);
+            }
+            else if (newDevice.type == "ro") {
+                topo.routers.push(newDevice._id);
+            }
+            else if (newDevice.type == "co") {
+                topo.controllers.push(newDevice._id);
+            }
+            else if (newDevice.type == "la") {
+                topo.laptops.push(newDevice._id);
+            }
+            await topo.save();
+        }else{
+            res.json({msg: "Host name is taken"})
         }
-        else if (newDevice.type == "sw") {
-            topo.sws.push(newDevice._id);
-        }
-        else if (newDevice.type == "ro") {
-            topo.routers.push(newDevice._id);
-        }
-        else if (newDevice.type == "co") {
-            topo.controllers.push(newDevice._id);
-        }
-        else if (newDevice.type == "la") {
-            topo.laptops.push(newDevice._id);
-        }
-        await topo.save();
+       
     }
 }
 const removeDevice = async (req, res) => {
@@ -42,24 +48,6 @@ const removeDevice = async (req, res) => {
     const type = device.type
     await Device.deleteOne({ _id: deviceId })
     await Topo.deleteOne({ _id: deviceId })
-    // const topo = await Topo.findById(req.body.topoId);
-    // console.log(topo);
-    // if (type == "pc") {
-    //     topo.pcs.push(deviceId);
-    // }
-    // else if (type == "sw") {
-    //     topo.sws.push(deviceId);
-    // }
-    // else if (type == "ro") {
-    //     topo.routers.push(deviceId);
-    // }
-    // else if (type == "co") {
-    //     topo.controllers.push(deviceId);
-    // }
-    // else if (type == "la") {
-    //     topo.laptops.push(deviceId);
-    // }
-    // await topo.save();
 }
 const updateDevice = async (req, res) => {
     const deviceId = req.body.id;
@@ -71,5 +59,5 @@ module.exports = {
     getAllDevice,
     addDevice,
     removeDevice,
-    updateDevice
+    updateDevice,
 }
