@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Device = require('./device.model');
 const topoSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -41,5 +41,4 @@ const topoSchema = new mongoose.Schema({
         ref: 'Users'
     }],
 })
-
 module.exports = mongoose.model('Topo', topoSchema);

@@ -62,6 +62,10 @@ io.on('connect', (socket) => {
         // Broadcast the mouse movement data to all connected clients except the sender
         socket.broadcast.emit('controllerMove', data);
     });
+    socket.on('topoChange', (data) => {
+        // Broadcast the mouse movement data to all connected clients except the sender
+        io.emit('topoChange', data);
+    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected');

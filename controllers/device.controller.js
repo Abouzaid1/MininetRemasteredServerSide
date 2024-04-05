@@ -1,11 +1,10 @@
 const Device = require('../models/device.model');
 const httpStatusText = require('../utils/httpStatusText');
 const Topo = require('../models/topo.model');
+const Link = require('../models/link.model');
 const getAllDevice = async (req, res) => {
-    console.log(req.params);
     const devices = await Device.findById(req.params.id);
     topoId = req.params.id
-    console.log("1");
     res.json(devices);
 }
 const addDevice = async (req, res) => {
@@ -14,7 +13,7 @@ const addDevice = async (req, res) => {
     } else {
 
         const newDevice = new Device(req.body);
-        const existingDevices = await Device.find({name:req.body.name})
+        const existingDevices = await Device.find({ name: req.body.name })
         if (existingDevices.length == 0) {
             await newDevice.save();
 
@@ -35,23 +34,26 @@ const addDevice = async (req, res) => {
                 topo.laptops.push(newDevice._id);
             }
             await topo.save();
-        }else{
-            res.json({msg: "Host name is taken"})
+        } else {
+            res.json({ msg: "Host name is taken" })
         }
-       
+
     }
 }
 const removeDevice = async (req, res) => {
+    console.log("test");
     const deviceId = req.params.id
-    console.log(deviceId);
     const device = await Device.findById(deviceId);
-    const type = device.type
     await Device.deleteOne({ _id: deviceId })
-    await Topo.deleteOne({ _id: deviceId })
+    await Link.deleteOne({ "link.to": device?.name })
+    await Link.deleteOne({ "link.from": device?.name })
+
+
 }
 const updateDevice = async (req, res) => {
     const deviceId = req.body.id;
     const newPosition = req.body.position;
+    
     console.log(newPosition);
     await Device.findByIdAndUpdate(deviceId, { position: newPosition });
 }
