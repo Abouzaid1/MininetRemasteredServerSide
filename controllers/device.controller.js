@@ -4,7 +4,6 @@ const Topo = require('../models/topo.model');
 const Link = require('../models/link.model');
 const getAllDevice = async (req, res) => {
     const devices = await Device.findById(req.params.id);
-    topoId = req.params.id
     res.json(devices);
 }
 const addDevice = async (req, res) => {
@@ -41,12 +40,12 @@ const addDevice = async (req, res) => {
     }
 }
 const removeDevice = async (req, res) => {
-        const deviceId = req.params.id
-        const device = await Device.findById(deviceId);
-        await Device.deleteOne({ _id: deviceId })
-        await Link.deleteOne({ "link.to": device?.name })
-        await Link.deleteOne({ "link.from": device?.name })
-        res.json({ msg: "Device is removed" })
+    const deviceId = req.params.id
+    const device = await Device.findById(deviceId);
+    await Device.deleteOne({ _id: deviceId })
+    await Link.deleteOne({ "link.to": device?.name })
+    await Link.deleteOne({ "link.from": device?.name })
+    res.json({ msg: "Device is removed" })
 }
 const updateDevice = async (req, res) => {
     const deviceId = req.body.id;

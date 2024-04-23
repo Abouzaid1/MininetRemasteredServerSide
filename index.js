@@ -46,25 +46,29 @@ const { createServer } = require('node:http');
 const { Server } = require("socket.io");
 const server = http.createServer(app);
 const io = new Server(server)
+const topoId = require("./controllers/topo.controller")
+console.log("topoId ", topoId);
 io.on('connect', (socket) => {
     socket.on('dataFromClient', (data) => {
-        const { room, message } = data;
+        const { room } = data;
         // io.to(room).emit('message', message);
-        console.log(room);
         socket.join(room);
     });
     // Listen for mouseMove events from clients
     socket.on('mouseMove', (data) => {
         // Broadcast the mouse movement data to all connected clients except the sender
-        socket.broadcast.emit('mouseMove', data);
+        const room = data.room;
+        socket.to(room).emit('mouseMove', data);
     });
     socket.on('controllerMove', (data) => {
+        const room = data.room;
         // Broadcast the mouse movement data to all connected clients except the sender
-        socket.broadcast.emit('controllerMove', data);
+        socket.to(room).emit('controllerMove', data);
     });
     socket.on('topoChange', (data) => {
+        const room = data.room;
         // Broadcast the mouse movement data to all connected clients except the sender
-        io.emit('topoChange', data);
+        io.to(room).emit('topoChange', data.data);
     });
 
     socket.on('disconnect', () => {
