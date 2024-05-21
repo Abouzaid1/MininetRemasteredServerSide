@@ -11,6 +11,12 @@ const deviceSchema = new mongoose.Schema({
     topoId: {
         type: String
     },
+    ipAddress: {
+        type: String
+    },
+    defaultGateWay: {
+        type: String
+    },
 })
 
 deviceSchema.pre('deleteOne', async function (next) {

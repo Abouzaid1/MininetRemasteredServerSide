@@ -10,9 +10,9 @@ const addDevice = async (req, res) => {
     if (!req.body.name) {
         res.json("The device should has a host name")
     } else {
-
         const newDevice = new Device(req.body);
-        const existingDevices = await Device.find({ name: req.body.name })
+        // const existingDevices = await Device.find({ name: req.body.name })
+        const existingDevices = await Device.find({ name: req.body.name, topoId: req.body.topoId })
         if (existingDevices.length == 0) {
             await newDevice.save();
 
@@ -56,5 +56,5 @@ module.exports = {
     getAllDevice,
     addDevice,
     removeDevice,
-    updateDevice,
+    updateDevice
 }

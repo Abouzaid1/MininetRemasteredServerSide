@@ -19,12 +19,14 @@ const deviceRouter = require('./routes/device.route');
 const topoRouter = require('./routes/topo.route');
 const textRouter = require('./routes/text.route');
 const linkRouter = require('./routes/link.route');
+const userRouter = require('./routes/user.route');
 
 
 app.use('/api/topo', topoRouter)
 app.use('/api/device', deviceRouter)
 app.use('/api/text', textRouter)
 app.use('/api/link', linkRouter)
+app.use('/api/user', userRouter)
 
 
 // global middleware for not found router
@@ -68,7 +70,7 @@ io.on('connect', (socket) => {
     socket.on('topoChange', (data) => {
         const room = data.room;
         // Broadcast the mouse movement data to all connected clients except the sender
-        io.to(room).emit('topoChange', data.data);
+        io.to(room).emit('topoChange', data);
     });
 
     socket.on('disconnect', () => {
@@ -76,6 +78,6 @@ io.on('connect', (socket) => {
     });
 });
 
-server.listen(3000, () => {
+server.listen(3000, '0.0.0.0', () => {
     console.log('server running at 3000');
 });
