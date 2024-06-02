@@ -4,6 +4,7 @@ const Topo = require('../models/topo.model');
 const Link = require('../models/link.model');
 const getAllDevice = async (req, res) => {
     const devices = await Device.findById(req.params.id);
+    // console.log(devices);
     res.json(devices);
 }
 const addDevice = async (req, res) => {

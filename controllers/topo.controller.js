@@ -20,5 +20,4 @@ const addTopology = async (req, res) => {
 module.exports = {
     getTopoById,
     addTopology,
-
 }
