@@ -50,8 +50,21 @@ const removeDevice = async (req, res) => {
 }
 const updateDevice = async (req, res) => {
     const deviceId = req.body.id;
+    console.log(req.body);
     const newPosition = req.body.position;
-    await Device.findByIdAndUpdate(deviceId, { position: newPosition });
+    const newIp = req.body.ipAddress;
+    const newIpGateWay = req.body.defaultGateWay;
+    if (newPosition) {
+        await Device.findByIdAndUpdate(deviceId, { position: newPosition });
+    } else if (newIp && !newIpGateWay) {
+        await Device.findByIdAndUpdate(deviceId, { ipAddress: newIp });
+    } else if (newIpGateWay && newIp) {
+        console.log("test");
+        await Device.findByIdAndUpdate(deviceId, { ipAddress: newIp, defaultGateWay: newIpGateWay });
+    } else if (newIpGateWay && !newIp) {
+        console.log("test");
+        await Device.findByIdAndUpdate(deviceId, { defaultGateWay: newIpGateWay });
+    }
 }
 module.exports = {
     getAllDevice,

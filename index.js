@@ -58,7 +58,7 @@ io.on('connect', (socket) => {
         socket.join(room);
     });
     socket.on('joinRoom', (data) => {
-        const { room, user } = data;
+        const { room, user,userPhoto } = data;
 
         socket.join(room);
 
@@ -70,13 +70,13 @@ io.on('connect', (socket) => {
         const userExists = rooms[room].some(existingUser => existingUser.user === user);
 
         if (!userExists) {
-            rooms[room].push({ id: socket.id, user });
+            rooms[room].push({ id: socket.id, user,userPhoto });
             console.log(`User ${user} joined room ${room}`);
             console.log(rooms);
         } else {
             // Update the socket ID for the existing user
             rooms[room] = rooms[room].map(existingUser =>
-                existingUser.user === user ? { id: socket.id, user } : existingUser
+                existingUser.user === user ? { id: socket.id, user, userPhoto } : existingUser
             );
             console.log(`User ${user} reconnected to room ${room}`);
             console.log(rooms);
@@ -108,6 +108,11 @@ io.on('connect', (socket) => {
         const room = data.room;
         // Broadcast the mouse movement data to all connected clients except the sender
         io.to(room).emit('topoChange', data);
+    });
+    socket.on('deviceUpdate', (data) => {
+        const room = data.room;
+        // Broadcast the mouse movement data to all connected clients except the sender
+        io.to(room).emit('deviceUpdate', data);
     });
 
     socket.on('disconnect', () => {
