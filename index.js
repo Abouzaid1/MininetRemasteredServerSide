@@ -59,16 +59,12 @@ io.on('connect', (socket) => {
     });
     socket.on('joinRoom', (data) => {
         const { room, user,userPhoto } = data;
-
         socket.join(room);
-
         if (!rooms[room]) {
             rooms[room] = [];
         }
-
         // Check if the user already exists in the room
         const userExists = rooms[room].some(existingUser => existingUser.user === user);
-
         if (!userExists) {
             rooms[room].push({ id: socket.id, user,userPhoto });
             console.log(`User ${user} joined room ${room}`);
