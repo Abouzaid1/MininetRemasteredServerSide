@@ -30,8 +30,7 @@ const topoSchema = new mongoose.Schema({
         ref: 'Device'
     }],
     links: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Link'
+        type: Object
     }],
     creator: {
         type: mongoose.Schema.Types.ObjectId,

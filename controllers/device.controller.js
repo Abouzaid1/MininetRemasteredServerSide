@@ -42,10 +42,18 @@ const addDevice = async (req, res) => {
 }
 const removeDevice = async (req, res) => {
     const deviceId = req.params.id
+
     const device = await Device.findById(deviceId);
+    console.log(device);
     await Device.deleteOne({ _id: deviceId })
-    await Link.deleteOne({ "link.to": device?.name })
-    await Link.deleteOne({ "link.from": device?.name })
+    await Topo.updateOne(
+        { _id: device.topoId },
+        { $pull: { links: { from: device?.name } } }
+    );
+    await Topo.updateOne(
+        { _id: device.topoId },
+        { $pull: { links: { to: device?.name } } }
+    );
     res.json({ msg: "Device is removed" })
 }
 const updateDevice = async (req, res) => {
@@ -65,6 +73,7 @@ const updateDevice = async (req, res) => {
         console.log("test");
         await Device.findByIdAndUpdate(deviceId, { defaultGateWay: newIpGateWay });
     }
+    res.json({ msg: "Device is removed" })
 }
 module.exports = {
     getAllDevice,

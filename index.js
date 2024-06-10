@@ -6,7 +6,11 @@ const http = require('http');
 const app = express();
 const httpStatusText = require('./utils/httpStatusText');
 app.use(cors())
-
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 const url = process.env.MONGO_URL;
 
 mongoose.connect(url).then(() => {
@@ -58,7 +62,7 @@ io.on('connect', (socket) => {
         socket.join(room);
     });
     socket.on('joinRoom', (data) => {
-        const { room, user,userPhoto } = data;
+        const { room, user, userPhoto } = data;
         socket.join(room);
         if (!rooms[room]) {
             rooms[room] = [];
@@ -66,7 +70,7 @@ io.on('connect', (socket) => {
         // Check if the user already exists in the room
         const userExists = rooms[room].some(existingUser => existingUser.user === user);
         if (!userExists) {
-            rooms[room].push({ id: socket.id, user,userPhoto });
+            rooms[room].push({ id: socket.id, user, userPhoto });
             console.log(`User ${user} joined room ${room}`);
             console.log(rooms);
         } else {
