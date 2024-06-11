@@ -16,8 +16,16 @@ const addTopology = async (req, res) => {
     await user.save();
     res.json(user.topologies)
 }
+        const updateTopo = async (req, res) => {
+            console.log(req.params.id);
+            console.log(req.body);
+            const { id, remoteController, remoteControllerPort } = req.body
+            await Topo.findByIdAndUpdate(id, { remoteController: remoteController });
+            await Topo.findByIdAndUpdate(id, { remoteControllerPort: remoteControllerPort });
+        }
 
 module.exports = {
     getTopoById,
     addTopology,
-}
+    updateTopo
+}   

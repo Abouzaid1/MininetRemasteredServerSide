@@ -39,5 +39,13 @@ const topoSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     }],
+    remoteController:{
+        type: String,
+        default: '127.0.0.1'
+    },
+    remoteControllerPort:{
+        type: String,   
+        default: '8080'
+    }
 })
 module.exports = mongoose.model('Topo', topoSchema);
